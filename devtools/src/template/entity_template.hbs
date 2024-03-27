@@ -1,0 +1,10 @@
+use serde::Deserialize;
+use sqlx::types::time::OffsetDateTime;
+use sqlx::FromRow;
+
+#[derive(FromRow, Deserialize, Debug)]
+pub struct {{model_name}}Entity {
+{{#each columns as |column| }}
+    pub {{column.field_name}}: Option<{{column.field_type}}>,// {{column.comment}}
+{{/each}}
+}

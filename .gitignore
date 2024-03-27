@@ -1,0 +1,9 @@
+**/target
+node_modules
+.env
+.idea
+**/dist
+**/*.log
+vendor
+**/.sqlx
+.vscode

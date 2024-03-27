@@ -1,0 +1,149 @@
+[env] ## tells cargo make that we're in the context of a Cargo workspace
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+
+[config] ## we want most/all of our tasks to run in the context of a workspace
+default_to_workspace = false
+
+[tasks.dev]
+install_crate="cargo-watch"
+cwd = "./crates/conduit-bin"
+command = "cargo"
+args = ["watch", "-x", "clippy", "-x", "run"]
+dependencies = ["postgres"]
+
+[tasks.web]
+command = "trunk"
+args = ["serve"]
+dependencies = ["docker-start"]
+
+[tasks.web-demo]
+command = "trunk"
+args = ["serve"]
+
+[tasks.docker]
+command = "docker"
+args = [
+    "compose",
+    "-f", "./deploy/docker-compose.metrics.yml",
+    "-f", "./deploy/docker-compose.postgres.yml",
+    "-f", "./deploy/docker-compose.conduit-bin.yml",
+    "-f", "./deploy/docker-compose.conduit-web.yml",
+    "up",
+    "--build"
+]
+
+[tasks.docker-start]
+command = "docker"
+args = [
+    "compose",
+    "-f", "./deploy/docker-compose.metrics.yml",
+    "-f", "./deploy/docker-compose.postgres.yml",
+    "-f", "./deploy/docker-compose.conduit-bin.yml",
+    "start"
+]
+
+[tasks.postgres]
+command = "docker"
+args = [
+    "compose",
+    "-f", "./deploy/docker-compose.metrics.yml",
+    "-f", "./deploy/docker-compose.postgres.yml",
+    "start"
+]
+
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
+[tasks.fix]
+command = "cargo"
+args = ["fix", "--allow-dirty"]
+
+[tasks.lint]
+command = "cargo"
+args = ["clippy"]
+
+[tasks.lint-staged]
+command = "npx"
+args = ["lint-staged"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.build]
+command = "cargo"
+args = ["build", "--release"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+
+[tasks.test-watch]
+install_crate = "cargo-watch"
+command = "cargo"
+args = ["watch", "-x", "test"]
+
+[tasks.test-commit]
+command = "cargo"
+args = ["test"]
+
+[tasks.local-coverage]
+install_crate = "cargo-tarpaulin"
+command = "cargo"
+args = [
+    "tarpaulin",
+    "--verbose",
+    "--all-features",
+    "--workspace",
+    "--timeout",
+    "240",
+    "--out",
+    "Xml"
+]
+
+[tasks.integration]
+command = "./integrations/run-postman-tests.sh"
+dependencies = ["docker-start"]
+
+[tasks.migrate] ## ensure Postgres is running, the container has a bit of warmup time causing migrations to fail
+cwd = "./crates/conduit-infrastructure"
+install_crate = "sqlx"
+command = "sqlx"
+args = ["migrate", "run"]
+dependencies = ["postgres"]
+
+[tasks.refresh-schema]
+cwd = "./crates/conduit-infrastructure"
+install_crate = "sqlx"
+command = "cargo"
+args = ["sqlx", "prepare"]
+
+[tasks.pre-commit]
+dependencies = [
+    "lint", ## lints our code using clippy during pre-commit
+    "lint-staged", ## uses cargofmt to format our staged files
+]
+
+# ci task is called from our CI GitHub action
+[tasks.ci]
+dependencies = [
+    "build",
+    "test"
+]
+
+# coverage task is called from our coverage GitHub action
+[tasks.ci-coverage]
+toolchain = "nightly"
+command = "cargo"
+args = [
+    "tarpaulin",
+    "--verbose",
+    "--all-features",
+    "--workspace",
+    "--timeout",
+    "240",
+    "--out",
+    "Xml"
+]

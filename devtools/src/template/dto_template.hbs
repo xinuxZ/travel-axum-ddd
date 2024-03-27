@@ -1,0 +1,31 @@
+use serde::{Deserialize, Serialize};
+use validator::Validate;
+use crate::domain::{{table_name}}::{{model_name}}Entity;
+
+#[derive(Serialize, Deserialize, Validate, Clone, Debug, Default)]
+pub struct {{model_name}}DTO {
+    {{#each columns as |column| }}
+        {{column.field_name}}: Option<{{column.field_type}}>,// {{column.comment}}
+    {{/each}}
+}
+
+impl Into<{{model_name}}Entity> for {{model_name}}DTO {
+    fn into(self) -> {{model_name}} {
+     {{model_name}}Entity {
+        {{#each columns as |column| }}
+            {{column.field_name}}: self.{{column.field_name}},
+        {{/each}}
+
+        }
+    }
+}
+
+impl From<{{model_name}}> for {{model_name}}DTO {
+    fn from(arg: {{model_name}}Entity) -> Self {
+    Self {
+        {{#each columns as |column| }}
+            {{column.field_name}}: arg.{{column.field_name}},
+        {{/each}}
+        }
+    }
+}

@@ -1,0 +1,17 @@
+use serde::{Deserialize, Serialize};
+use validator_derive::Validate;
+
+#[derive(Serialize, Deserialize, Validate, Clone, Debug, Default)]
+pub struct {{model_name}}Command {
+    {{#each columns as |column| }}
+        {{column.field_name}}: Option<{{column.field_type}}>,// {{column.comment}}
+    {{/each}}
+}
+
+#[derive(Serialize, Deserialize, Validate, Clone, Debug, Default)]
+pub struct {{model_name}}Query {
+    {{#each columns as |column| }}
+        {{column.field_name}}: Option<{{column.field_type}}>,// {{column.comment}}
+    {{/each}}
+}
+

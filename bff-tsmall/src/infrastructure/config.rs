@@ -1,0 +1,35 @@
+#[derive(clap::Parser)]
+pub struct AppConfig {
+    #[clap(long, env)]
+    pub host: String,
+
+    #[clap(long, env)]
+    pub port: u32,
+
+    #[clap(long, env)]
+    pub cors_origin: String,
+
+    #[clap(long, env)]
+    pub mysql_url: String,
+
+    #[clap(long, env)]
+    pub postgresql_url: String,
+
+    #[clap(long, env)]
+    pub rust_log: String,
+
+    #[clap(long, env)]
+    pub log_path: String,
+
+    #[clap(long, env)]
+    pub argon_salt: String,
+
+    #[clap(long, env)]
+    pub token_secret: String,
+
+    #[clap(long, env)]
+    pub run_migrations: bool,
+
+    #[clap(long, env)]
+    pub seed: bool,
+}

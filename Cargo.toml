@@ -1,0 +1,24 @@
+[workspace]
+members = [
+  "devtools", # 开发工具
+  # "core-share",
+  # "core-scm",          # 供应链系统  
+  # "core-fms",          # 财务系统
+  # "core-oms",          # 销售订单
+  # "core-tps",          # 直连系统
+  # "core-league",       # 分销商系统
+  # "core-pms",          # 销售端商品系统
+  # "core-sms",          # 短信管理系统
+  # "core-poi",          # POI管理
+  # "core-data",         # 数据系统
+  "core-oms", # 管理后台api
+  "bff-tsmall", # 商城后端api
+  "bff-tsadmin", "core-tps",
+  # "bff-tssupplier", # 供应商页面
+  # "client-tcmall",     # 商城前台页面
+  # "client-tcadmin",    # 管理后台页面
+  # "client-tcsupplier", # 供应商后台api
+]
+resolver = "2"
+
+exclude = ["devtools", "target"]

@@ -1,0 +1,6 @@
+#[derive(Clone, Debug)]
+pub struct {{model_name}} {
+{{#each columns as |column| }}
+    pub {{column.field_name}}: Option<{{column.field_type}}>,// {{column.comment}}
+{{/each}}
+}
